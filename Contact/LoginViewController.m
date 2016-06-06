@@ -10,6 +10,8 @@
 #import "MBProgressHUD+MJ.h"
 #import "Contact.h"
 
+#define LoginFilepath [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"login.data"]
+
 @interface LoginViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *pwdTextField;
@@ -27,11 +29,39 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(checkNameAndPwd) name:UITextFieldTextDidChangeNotification object:self.nameTextField];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(checkNameAndPwd) name:UITextFieldTextDidChangeNotification object:self.pwdTextField];
+    
+    //页面显示后 做的预处理：是否自动记住密码，是否自动登录，设置通知机制
+    [self preLogin];
+    
 }
+
+#pragma mark 去除控制器中所有的通知
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark 记住密码以及自动登录处理
+-(void)preLogin{
+    
+    //是否记住密码或自动登录
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL rmbPwd = [defaults boolForKey:@"rmbPwd"];
+    BOOL autoLogin = [defaults boolForKey:@"auto"];
+    if(rmbPwd){
+        [self.rmbSwitch setOn:YES animated:NO];
+        self.nameTextField.text = [defaults objectForKey:@"name"];
+        self.pwdTextField.text = [defaults objectForKey:@"pwd"];
+    }
+    if(autoLogin){
+        [self.auoLoginSwitch setOn:YES animated:NO];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self Login];
+        });
+    }
+    
+    //设置文本框 通知机制
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(checkNameAndPwd) name:UITextFieldTextDidChangeNotification object:self.nameTextField];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(checkNameAndPwd) name:UITextFieldTextDidChangeNotification object:self.pwdTextField];
 }
 
 #pragma mark 点击触摸时 取消键盘事件
@@ -42,35 +72,40 @@
     [self.nameTextField resignFirstResponder];
     [self.pwdTextField resignFirstResponder];
 }
+
 #pragma mark 登录按钮能否点击
 -(void)checkNameAndPwd{
     self.loginBtn.enabled = (self.nameTextField.text.length && self.pwdTextField.text.length);
 }
 
+#pragma mark 记住密码处理
 - (IBAction)rmbPwd {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if(self.rmbSwitch.isOn == NO){
         [self.auoLoginSwitch setOn:NO animated:YES];
+        [defaults setBool:NO forKey:@"rmbPwd"];
     }else{
-//        //将界面数据存储
-//        //1.获取沙盒路径
-//        NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/pwd.data"];
-//        
-//        //2.获取UI界面数据封装成对象
-//        Contact *contact = [[Contact alloc] init];
-//        contact.name = self.nameTextField.text;
-//        contact.telNum = self.pwdTextField.text;
-//        
-//        //3.存储数据
-//        [NSKeyedArchiver archiveRootObject:contact toFile:path];
+        //用户名和密码存储
+        [defaults setBool:YES forKey:@"rmbPwd"];
+        [defaults setObject:self.nameTextField.text forKey:@"name"];
+        [defaults setObject:self.pwdTextField.text forKey:@"pwd"];
     }
 }
 
+#pragma mark 自动登录处理
 - (IBAction)autoLogin {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (self.auoLoginSwitch.isOn) {
         [self.rmbSwitch setOn:YES animated:YES];
+        [defaults setBool:YES forKey:@"auto"];
+        [defaults setBool:YES forKey:@"rmbPwd"];
+    }else{
+        [defaults setBool:NO forKey:@"auto"];
     }
 }
 
+#pragma mark 登录
 - (IBAction)Login {
     
     //错误信息处理
@@ -83,7 +118,6 @@
         return;
     }
     
-
     //创建蒙板
     [MBProgressHUD showMessage:@"正在登录..."];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -91,10 +125,12 @@
         [self performSegueWithIdentifier:@"login2contacts" sender:nil];
     });
 }
+
 /**
  *  执行segue之后，跳转之前调用
  *  在此可以向下一个控制器传递数据
  */
+#pragma mark 控制器跳转传数据
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     //获取目标控制器
     UIViewController *destination = segue.destinationViewController;

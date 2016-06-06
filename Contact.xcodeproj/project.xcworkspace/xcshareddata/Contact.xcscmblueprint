@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "221712C31E53053B2C30446FFDE0F141EDC3B4E9",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "221712C31E53053B2C30446FFDE0F141EDC3B4E9" : 0,
+    "715415D62222F14C184A1E4949AE396146E90E69" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "84BB122C-96CF-4A1D-A884-067796996791",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "221712C31E53053B2C30446FFDE0F141EDC3B4E9" : "Contact\/",
+    "715415D62222F14C184A1E4949AE396146E90E69" : ""
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Contact",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Contact.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Kimicz20\/Contact.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "221712C31E53053B2C30446FFDE0F141EDC3B4E9"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Kimicz20\/IOS-Coding.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "715415D62222F14C184A1E4949AE396146E90E69"
+    }
+  ]
+}
